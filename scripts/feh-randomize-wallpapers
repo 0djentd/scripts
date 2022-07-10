@@ -1,0 +1,3 @@
+#!/bin/bash
+
+feh --bg-fill --randomize "$WALLPAPERS_DIR"

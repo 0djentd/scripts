@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo "Deploying website."
+# echo "Running npm run build"
+# npm run build
+echo "Switching branch to gh-pages"
+git checkout gh-pages
+echo "Removing assets folder."
+rm -r assets
+echo "Copying new version"
+cp -r dist/* .
+touch .nojekyll
+echo "Pushing new version"
+git add .
+git commit -am "new version"
+git push
+echo "Switching branch to master"
+git checkout master
+echo "Done."

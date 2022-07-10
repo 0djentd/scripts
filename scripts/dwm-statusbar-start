@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# This is separate file for restarting the thing without reloading autostart script.
+while true; do
+        dwm-statusbar-base
+done

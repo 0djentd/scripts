@@ -1,0 +1,7 @@
+#!/bin/bash
+
+pacman -Qq
+pip freeze
+pipx list --short
+# cargo install --list
+# npm list

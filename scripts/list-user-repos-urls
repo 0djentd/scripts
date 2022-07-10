@@ -1,0 +1,4 @@
+#!/bin/bash
+
+gh_username=$1
+gh repo list "$gh_username" --limit=100 | rg "^[\S]*" --only-matching --color=never

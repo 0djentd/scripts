@@ -1,0 +1,6 @@
+#!/bin/bash
+
+while true; do
+        xsetroot -name " $(df -h --type=ext4 | rg --color=never /dev/sda2 | rg --only-matching --color=never "[^ ]*[GM] *[0-9]*%") | $(uname -r) | $(date +'%a %F %R')"
+        sleep 1
+done

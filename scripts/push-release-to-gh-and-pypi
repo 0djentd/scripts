@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+version="v$(poetry version -s)"
+echo "Release name: $version"
+
+rm dist/*
+poetry build
+gh release upload "$version" dist/*
+twine upload dist/*
