@@ -1,1 +1,0 @@
-# 0djentd/scripts
