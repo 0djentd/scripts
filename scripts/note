@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+directory="$HOME/docs/notes"
+terminal="${TERMINAL:=alacritty}"
+editor="${EDITOR:=nvim}"
+
+info="Usage:
+  -d/--directory
+  -t/--terminal
+  -e/--editor
+"
+
+while [[ $# -gt 0 ]]
+do
+    echo "$1"
+    case "$1" in
+        -d|--directory)
+            shift
+            directory=$1
+            [[ -d $directory ]] || echo "Directory '$directory' does not exists" && exit 1
+            ;;
+        -t|--terminal)
+            shift
+            terminal="$1"
+            ;;
+        -e|--editor)
+            shift
+            editor="$1"
+            ;;
+        --help|*)
+            echo "$info"
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+file_name="$directory/$(date | sed 's/\s/_/g')"
+
+"$terminal" -e "$editor" "$file_name" || exit 1
