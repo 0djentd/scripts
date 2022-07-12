@@ -1,7 +1,13 @@
 #!/bin/bash
 
+default_todo_file="$HOME/docs/todo/todo"
+todo_file="${TODO_FILE_PATH:=$default_todo_file}"
+
 while true; do
         disk_usage="$(df -h --type=ext4 | rg --color=never /dev/sda2 | rg --only-matching --color=never '[^ ]*[GM] *[0-9]*%')"
-        xsetroot -name " $disk_usage | $(uname -r) | $(date +'%a %F %R')"
+        todo_count_cmd="cat $todo_file"
+        todo_text_cmd="head --lines 1 $todo_file"
+        todo_str="todo($($todo_count_cmd | wc -l)): $($todo_text_cmd)"
+        xsetroot -name " $todo_str | $disk_usage | $(uname -r) | $(date +'%a %F %R')"
         sleep 1
 done
