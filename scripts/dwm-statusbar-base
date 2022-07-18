@@ -8,6 +8,11 @@ while true; do
         todo_count_cmd="cat $todo_file"
         todo_text_cmd="head --lines 1 $todo_file"
         todo_str="todo($($todo_count_cmd | wc -l)): $($todo_text_cmd)"
-        xsetroot -name " $todo_str | $disk_usage | $(uname -r) | $(date +'%a %F %R')"
-        sleep 1
+        if [[ -z $(pgrep newsboat) ]]; then
+            rss="$(newsboat -x print-unread | rg --only-matching '[0-9]*')"
+        else
+            rss="..."
+        fi
+        xsetroot -name " $todo_str | rss: $rss | $disk_usage | $(uname -r) | $(date +'%a %F %R')"
+        sleep 5
 done
