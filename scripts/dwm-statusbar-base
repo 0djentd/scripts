@@ -1,6 +1,6 @@
 #!/bin/bash
 
-default_todo_file="$HOME/docs/todo/todo"
+default_todo_file="$HOME/docs/todo.txt"
 todo_file="${TODO_FILE_PATH:=$default_todo_file}"
 
 while true; do

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-default_file_path="$HOME/docs/todo/todo"
+default_file_path="$HOME/docs/todo.txt"
 file_path="${TODO_FILE_PATH:=$default_file_path}"
 alacritty -e nvim "$file_path" || exit 1
