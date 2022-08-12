@@ -1,0 +1,115 @@
+#!/usr/bin/env python
+
+import argparse
+import datetime
+import logging
+import os
+import re
+from collections import UserList
+from pprint import pprint
+
+logger = logging.getLogger(__name__)
+
+
+_DEFAULT_FILENAME = os.path.join(os.environ.get("HOME", "~/"), "docs/day.md")
+_TIMETABLE_START = "# TIMETABLE START\n"
+_TIMETABLE_END = "# TIMETABLE END\n"
+
+ignore = [
+    "^[#]+",  # annotations
+    "^[\s]*$",  # empty lines
+]
+
+
+def _parse_line(line: str):
+    if not re.search("[-\ ]*\d\d:\d\d .+", line):
+        raise ValueError(line)
+    numbers_part = re.search("\d\d:\d\d", line).group()
+    numbers = re.findall("\d\d", numbers_part)
+    title = re.search("(?<=\d\d) .*$", line).group()
+    hour = int(numbers[0])
+    minute = int(numbers[1])
+    return hour, minute, title
+
+
+class Activity:
+    title: str
+    start: datetime.time
+
+    def __init__(self, line):
+        hour, minute, title = _parse_line(line)
+        self.title = title
+        self.start = datetime.time(hour=hour, minute=minute)
+
+    def __repr__(self):
+        return f"start: {self.start}, title: {self.title}"
+
+
+class Timetable(UserList):
+    def now(self) -> Activity:
+        now = datetime.datetime.now().time()
+        return self.for_datetime(now)
+
+    def next(self) -> Activity:
+        now = datetime.datetime.now().time()
+        return self.for_datetime(now, 1)
+
+    def for_datetime(self, datetime_obj, add: int = 0) -> Activity:
+        activity = self.data[0]
+        count = 0
+        for x in self.data:
+            if x.start >= datetime_obj:
+                count += 1
+                if count > add:
+                    break
+            activity = x
+        return activity
+
+
+def parse_file(timetable_filename) -> Timetable:
+    timetable_lines = []
+    with open(timetable_filename, "r", encoding="utf-8") as file:
+        reading_timetable = False
+        for line in file.readlines():
+            # Ignore lines
+            skip = False
+            for expr in ignore:
+                if re.match(expr, line):
+                    logger.debug(expr)
+                    skip = True
+            if skip:
+                if line != _TIMETABLE_END and line != _TIMETABLE_START:
+                    logger.debug("Ignoring line '%s'", line)
+                    continue
+
+            # Timetable
+            if reading_timetable:
+                if line == _TIMETABLE_END:
+                    reading_timetable = False
+                else:
+                    timetable_lines.append(line)
+            if line == _TIMETABLE_START:
+                reading_timetable = True
+
+    timetable = [Activity(timetable_lines[-1])] + [
+        Activity(line) for line in timetable_lines
+    ]
+    return Timetable(timetable)
+
+
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--timetable-file", type=str,
+                        default=_DEFAULT_FILENAME)
+    return parser.parse_args()
+
+
+def main():
+    config = get_args()
+    timetable = parse_file(config.timetable_file)
+    print(f"Now: {timetable.now()}")
+    print(f"Next: {timetable.next()}")
+
+
+if __name__ == "__main__":
+    main()
