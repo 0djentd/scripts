@@ -7,5 +7,6 @@ echo "Release name: $version"
 
 rm dist/*
 poetry build
+gh release create --generate-notes "$version"
 gh release upload "$version" dist/*
 twine upload dist/*
