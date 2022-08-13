@@ -27,7 +27,7 @@ def _parse_line(line: str):
         raise ValueError(line)
     numbers_part = re.search("\d\d:\d\d", line).group()
     numbers = re.findall("\d\d", numbers_part)
-    title = re.search("(?<=\d\d) .*$", line).group()
+    title = re.search("(?<=\d\d) .*$", line).group()[1:]
     hour = int(numbers[0])
     minute = int(numbers[1])
     return hour, minute, title
@@ -55,15 +55,15 @@ class Activity:
         if display_config.description:
             if display_config.time:
                 result += f"start: {self.start}"
-            if display_config.time and display_config.title:
-                result += " "
+                if display_config.title:
+                    result += " "
             if display_config.title:
                 result += f"title: {self.title}"
         else:
             if display_config.time:
                 result += f"{self.start}"
-            if display_config.time and display_config.title:
-                result += " "
+                if display_config.title:
+                    result += " "
             if display_config.title:
                 result += f"{self.title}"
         return result
