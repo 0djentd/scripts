@@ -6,6 +6,7 @@ import logging
 import os
 import re
 from collections import UserList
+from dataclasses import dataclass
 from pprint import pprint
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,14 @@ def _parse_line(line: str):
     return hour, minute, title
 
 
+@dataclass
+class DisplayConfig:
+    description: bool = True
+    time: bool = True
+    title: bool = True
+
+
+@dataclass
 class Activity:
     title: str
     start: datetime.time
@@ -41,8 +50,23 @@ class Activity:
         self.title = title
         self.start = datetime.time(hour=hour, minute=minute)
 
-    def __repr__(self):
-        return f"start: {self.start}, title: {self.title}"
+    def display(self, display_config: DisplayConfig) -> str:
+        result = ""
+        if display_config.description:
+            if display_config.time:
+                result += f"start: {self.start}"
+            if display_config.time and display_config.title:
+                result += " "
+            if display_config.title:
+                result += f"title: {self.title}"
+        else:
+            if display_config.time:
+                result += f"{self.start}"
+            if display_config.time and display_config.title:
+                result += " "
+            if display_config.title:
+                result += f"{self.title}"
+        return result
 
 
 class Timetable(UserList):
@@ -99,16 +123,41 @@ def parse_file(timetable_filename) -> Timetable:
 
 def get_args():
     parser = argparse.ArgumentParser()
+
+    # Config
     parser.add_argument("-t", "--timetable-file", type=str,
                         default=_DEFAULT_FILENAME)
+
+    # Display options
+    parser.add_argument("-T", "--no-time", action="store_true")
+    parser.add_argument("-I", "--no-title", action="store_true")
+
+    # Tasks to display
+    parser.add_argument("-D", "--no-description", action="store_true")
+    parser.add_argument("-C", "--no-current-task", action="store_true")
+    parser.add_argument("-N", "--no-next-task", action="store_true")
     return parser.parse_args()
 
 
 def main():
     config = get_args()
+    display_config = DisplayConfig(
+            time=not config.no_time,
+            description=not config.no_description,
+            title=not config.no_title)
     timetable = parse_file(config.timetable_file)
-    print(f"Now: {timetable.now()}")
-    print(f"Next: {timetable.next()}")
+    if not config.no_current_task:
+        line = ""
+        if display_config.description:
+            line += "Now: "
+        line += timetable.now().display(display_config)
+        print(line)
+    if not config.no_next_task:
+        line = ""
+        if display_config.description:
+            line += "Next: "
+        line += timetable.next().display(display_config)
+        print(line)
 
 
 if __name__ == "__main__":
