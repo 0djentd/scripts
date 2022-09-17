@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+script_name="note-template"
+templates_dir="$XDG_DATA_HOME/$script_name/templates"
+notes_dir="$XDG_DATA_HOME/$script_name/notes"
