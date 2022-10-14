@@ -1,0 +1,5 @@
+#!/bin/sh
+temp_name="REPLACE_TWO_VALUES_TEMPORARY_VARIABLE_NAME"
+sed -i "s/$1/$temp_name/g" $3
+sed -i "s/$2/$1/g" $3
+sed -i "s/$temp_name/$2/g" $3
