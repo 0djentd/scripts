@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-s", "--shell", type=str, default="zsh",
+                    help="Shell to generate eval lines for.")
+parser.add_argument("programs", type=str, nargs="+",
+                    help="Programs to generate eval lines for.")
+config = parser.parse_args()
+
+for program in config.programs:
+    UPPERCASE = program.upper().replace("-", "_")
+    LINE = f'eval "$(_{UPPERCASE}_COMPLETE={config.shell}_source {program})"'
+    print(LINE)
