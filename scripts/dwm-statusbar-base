@@ -12,6 +12,6 @@ while true; do
         else
             rss="?"
         fi
-        xsetroot -name " [$timetable_cli_status] | $todo_str | rss: $rss | $disk_usage | $(uname -r) | $(date +'%a %F %R')"
+        xsetroot -name " [$timetable_cli_status] | $todo_str | rss: $rss | ssd: $disk_usage | $(date +'%a %F %R')"
         sleep 5
 done
