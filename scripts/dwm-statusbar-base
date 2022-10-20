@@ -4,15 +4,14 @@ default_todo_file="$HOME/docs/todo.txt"
 todo_file="${TODO_FILE_PATH:=$default_todo_file}"
 
 while true; do
-        disk_usage="$(df -h --type=ext4 | rg --color=never /dev/sda2 | rg --only-matching --color=never '[^ ]*[GM] *[0-9]*%')"
-        todo_count_cmd="cat $todo_file"
-        todo_text_cmd="head --lines 1 $todo_file"
-        todo_str="todo($($todo_count_cmd | wc -l)): $($todo_text_cmd)"
+        disk_usage="$(df -ht ext4 | rg /dev/sda2 | rg -o '[^ ]*[GM] *[0-9]*%')"
+        todo_str="todo($(wc -l < "$todo_file")): $(head --lines 1 "$todo_file")"
+        timetable_cli_status="$(timetable-cli --combine-title-and-variation -S)"
         if [[ -z $(pgrep newsboat) ]]; then
-            rss="$(newsboat -x print-unread | rg --only-matching '[0-9]*')"
+            rss="$(newsboat -x print-unread | rg -o '[0-9]*')"
         else
-            rss="..."
+            rss="?"
         fi
-        xsetroot -name " $todo_str | rss: $rss | $disk_usage | $(uname -r) | $(date +'%a %F %R')"
+        xsetroot -name " [$timetable_cli_status] | $todo_str | rss: $rss | $disk_usage | $(uname -r) | $(date +'%a %F %R')"
         sleep 5
 done
