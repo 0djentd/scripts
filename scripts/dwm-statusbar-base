@@ -6,7 +6,7 @@ todo_file="${TODO_FILE_PATH:=$default_todo_file}"
 while true; do
         disk_usage="$(df -ht ext4 | grep /dev/sda2 | grep -o '[^ ]*[GM] *[0-9]*%')"
         todo_str="todo($(wc -l < "$todo_file")): $(head --lines 1 "$todo_file")"
-        if ! timetable-cli -v; then
+        if command -v timetable-cli &> /dev/null; then
             timetable_cli_status="$(timetable-cli --combine-title-and-variation --max-status-length 80 -S)"
         else
             timetable_cli_status="no timetable-cli"

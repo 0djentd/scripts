@@ -1,7 +1,21 @@
 #!/bin/bash
 
-pacman -Qq
-pip freeze
-pipx list --short
-# cargo install --list
-# npm list
+if command -v pacman &> /dev/null; then
+    pacman -Qq
+fi
+
+if command -v pip &> /dev/null; then
+    pip freeze
+fi
+
+if command -v pipx &> /dev/null; then
+    pipx list --short
+fi
+
+if command -v cargo &> /dev/null; then
+    cargo install --list
+fi
+
+if command -v npm &> /dev/null; then
+    npm list
+fi
