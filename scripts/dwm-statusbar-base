@@ -4,7 +4,7 @@ default_todo_file="$HOME/docs/todo.txt"
 todo_file="${TODO_FILE_PATH:=$default_todo_file}"
 
 while true; do
-        disk_usage="$(df -ht ext4 | rg /dev/sda2 | rg -o '[^ ]*[GM] *[0-9]*%')"
+        disk_usage="$(df -ht ext4 | grep /dev/sda2 | grep -o '[^ ]*[GM] *[0-9]*%')"
         todo_str="todo($(wc -l < "$todo_file")): $(head --lines 1 "$todo_file")"
         if ! timetable-cli -v; then
             timetable_cli_status="$(timetable-cli --combine-title-and-variation --max-status-length 80 -S)"
@@ -12,7 +12,7 @@ while true; do
             timetable_cli_status="no timetable-cli"
         fi
         if [[ -z $(pgrep newsboat) ]]; then
-            rss="$(newsboat -x print-unread | rg -o '[0-9]*')"
+            rss="$(newsboat -x print-unread | grep -o '[0-9]*')"
         else
             rss="?"
         fi

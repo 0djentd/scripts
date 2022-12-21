@@ -35,6 +35,6 @@ do
     esac
     shift
 done
-file_name="$directory/$(date --iso-8601=ns | rg --only-matching --pcre2 ".*:\d\d(?=,)").md"
+file_name="$directory/$(date --iso-8601=ns | grep -oP ".*:\d\d(?=,)").md"
 cp "$note_template" "$file_name"
 "$terminal" -e "$editor" "$file_name" || exit 1
