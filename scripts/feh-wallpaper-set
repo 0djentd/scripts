@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 wallpapers="$(sxiv -tro "$WALLPAPERS_DIR")"
 dialog --yesno "$wallpapers\n Reverse?" 30 30 && wallpapers="$(echo "$wallpapers" | sort --reverse)"
 echo "$wallpapers" | xargs --no-run-if-empty feh --bg-fill

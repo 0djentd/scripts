@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 directory="$HOME/docs/notes"
 note_template="$HOME/docs/note-template.md"
 terminal="${TERMINAL:=alacritty}"
